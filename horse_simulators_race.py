@@ -75,16 +75,6 @@ def get_final_ranking(horses):
     )
 
 def display_ranking(ranking, race_type):
-    print("\nClassement final :\n")
-    for place, (num, ch) in enumerate(ranking, 1):
-        if ch["lap_arrived"]:
-            t = ch["lap_arrived"] * LAP_TIME
-            print(f"{place}. Cheval {num} en {t} s")
-        elif not ch["actif"]:
-            print(f"{place}. Cheval {num} disqualifié")
-        else:
-            print(f"{place}. Cheval {num} - {ch['distance']} m")
-
     print(f"\nTop {race_type} :")
     for i, (num, ch) in enumerate(ranking[:race_type], 1):
         if ch["lap_arrived"]:
