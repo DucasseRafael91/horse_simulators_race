@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+""
+
+
 import random
 
 SPEED_MODIFICATION_GRID = {
@@ -17,6 +21,10 @@ RACE_LENGTH = 2400
 LAP_TIME = 10
 
 def get_number_of_horses():
+    """
+       Permet de savoir combien de chevaux particeperont à la course
+       :return: nombre de chevaux entre 12 et 20 qui participeront à la course
+    """
     while True:
         value = input("Entrer le nombre de chevaux (12-20) : ")
         if value.isdigit() and 12 <= int(value) <= 20:
@@ -24,6 +32,10 @@ def get_number_of_horses():
         print("Valeur non valide.")
 
 def get_race_type():
+    """
+       Permet de savoir quel type de course cela sera
+       :return: 3,4,5 selon si cela est un tierce, un quarte ou un quinte
+    """
     types = {"tierce": 3, "quarte": 4, "quinte": 5}
     while True:
         race = input("Type de course (tierce, quarte, quinte) : ").lower()
