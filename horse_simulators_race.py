@@ -7,7 +7,7 @@ from colorama import init, Fore, Style
 # Initialise colorama (pour Windows notamment)
 init(autoreset=True)
 
-SPEED_MODIFICATION_GRID = {
+speed_modification_grid = {
     0: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
     1: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
     2: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
@@ -17,9 +17,9 @@ SPEED_MODIFICATION_GRID = {
     6: {1: -2, 2: -1, 3: 0, 4: 0, 5: 0, 6: 'DQ'},
 }
 
-DISTANCE_BY_SPEED = {0: 0, 1: 23, 2: 46, 3: 69, 4: 92, 5: 115, 6: 138}
-RACE_LENGTH = 2400
-LAP_TIME = 10
+distance_by_speed = {0: 0, 1: 23, 2: 46, 3: 69, 4: 92, 5: 115, 6: 138}
+race_length = 2400
+lap_time = 10
 
 def get_number_of_horses():
     while True:
@@ -51,15 +51,15 @@ def update_horse(horse, roll, lap):
     if not horse["actif"] or horse["lap_arrived"]:
         return
 
-    mod = SPEED_MODIFICATION_GRID[horse["speed"]][roll]
+    mod = speed_modification_grid[horse["speed"]][roll]
     if mod == 'DQ':
         horse["actif"] = False
         return
 
     horse["speed"] += mod
-    horse["distance"] += DISTANCE_BY_SPEED[horse["speed"]]
+    horse["distance"] += distance_by_speed[horse["speed"]]
 
-    if horse["distance"] >= RACE_LENGTH and not horse["lap_arrived"]:
+    if horse["distance"] >= race_length and not horse["lap_arrived"]:
         horse["lap_arrived"] = lap
 
 def is_race_over(horses):
@@ -78,7 +78,7 @@ def display_ranking(ranking, race_type):
     print(f"\nTop {race_type} :")
     for i, (num, ch) in enumerate(ranking[:race_type], 1):
         if ch["lap_arrived"]:
-            t = ch["lap_arrived"] * LAP_TIME
+            t = ch["lap_arrived"] * lap_time
             print(f"{i}. Cheval {num} - {t//60} min {t%60} s")
         elif not ch["actif"]:
             print(f"{i}. Cheval {num} disqualifié")
@@ -89,7 +89,7 @@ def print_progress_bar(horses):
     max_bar_length = 40  # Largeur de la barre en caractères
 
     for num, horse in horses.items():
-        progress_ratio = horse["distance"] / RACE_LENGTH
+        progress_ratio = horse["distance"] / race_length
         progress_ratio = min(progress_ratio, 1.0)  # clamp max à 1
 
         filled_length = int(progress_ratio * max_bar_length)
