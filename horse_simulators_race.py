@@ -29,7 +29,7 @@ def get_number_of_horses():
 
 def get_race_type():
     """
-       Permet de savoir quel type de course, cela sera (tierce,quarte ou quinte )
+       Permet de savoir quel type de course, cela sera (tierce, quarte ou quinte )
        :return: 3,4,5 selon si cela est une tierce, un quarté ou un quinté
     """
     types = {"tierce": 3, "quarte": 4, "quinte": 5}
@@ -39,14 +39,22 @@ def get_race_type():
             return types[race]
         print("Type invalide.")
 
-def initialize_horses(nb):
-    return {
-        horse: {"speed": 0, "distance": 0, "actif": True, "lap_arrived": None}
-        for horse in range(1, nb + 1)
-    }
 
-def roll_dice():
-    return random.randint(1, 6)
+def initialize_horses(nb_horses):
+    """
+     Crée un dictionnaire représentant les chevaux d'une course.
+    :param nb_horses: Nombre de chevaux dans la course
+    :return: Dictionnaire des chevaux avec leurs attributs initialisés
+    """
+    horses = {}
+    for horse_number in range(1, nb_horses + 1):
+        horses[horse_number] = {
+            "speed": 0,
+            "distance": 0,
+            "actif": True,
+            "lap_arrived": None
+        }
+    return horses
 
 def update_horse(horse, roll, lap):
     if not horse["actif"] or horse["lap_arrived"]:
@@ -105,7 +113,7 @@ def run_race(nb_horses, race_type):
     while True:
         input(f"\nTour {lap} Appuyez sur Entrée")
         for num, horse in horses.items():
-            update_horse(horse, roll_dice(), lap)
+            update_horse(horse, random.randint(1, 6), lap)
 
         if is_race_over(horses):
             ranking = get_final_ranking(horses)
