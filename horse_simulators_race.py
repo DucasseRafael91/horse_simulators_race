@@ -2,165 +2,162 @@
 # -*- coding: utf-8 -*-
 import random
 
-"""
-Jeu de Nim - Version SIMPLE (21 allumettes) et MARIENBAD (4 tas : 1,3,5,7)
-"""
+# --- Grilles de vitesse et distance ---
+SPEED_MODIFICATION_GRID = {
+    0: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
+    1: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
+    2: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
+    3: {1: -1, 2: 0, 3: 0, 4: +1, 5: +1, 6: +1},
+    4: {1: -1, 2: 0, 3: 0, 4: 0, 5: +1, 6: +1},
+    5: {1: -2, 2: -1, 3: 0, 4: 0, 5: 0, 6: +1},
+    6: {1: -2, 2: -1, 3: 0, 4: 0, 5: 0, 6: 'DQ'},
+}
 
-"""
-   Demande le mode de jeu voulue (SIMPLE OU MARIENBAD)
-   :return: game_mode
-"""
-def ask_game_mode():
+DISTANCE_BY_SPEED = {
+    0: 0,
+    1: 23,
+    2: 46,
+    3: 69,
+    4: 92,
+    5: 115,
+    6: 138
+}
+
+RACE_LENGTH = 2400
+LAP_TIME = 10
+
+# --- Fonctions ---
+
+def get_number_of_horses():
     while True:
-        game_mode = input("Tapez SIMPLE (mode classique) ou MARIENBAD : ").strip().upper()
-        if game_mode in ("SIMPLE", "MARIENBAD"):
-            return game_mode
-        else:
-            print("Veuillez entrer SIMPLE ou MARIENBAD")
-
-
-"""
-    Demande le type de jeux voulue
-    :return: liste de noms des joueurs
-"""
-def ask_type_of_game():
-    while True:
-        choice = input("Tapez ORDINATEUR ou JOUEUR : ").strip().upper()
-        if choice == "JOUEUR":
-            player_name_1 = input("Entrez le nom du joueur 1 : ")
-            player_name_2 = input("Entrez le nom du joueur 2 : ")
-            return [player_name_1, player_name_2]
-        elif choice == "ORDINATEUR":
-            player_name_1 = input("Entrez le nom du joueur : ")
-            return [player_name_1, "Ordinateur"]
-        else:
-            print("Choix invalide. Tapez ORDINATEUR ou JOUEUR.")
-
-"""
-    Demande au joueur de choisir le nombre d'allumettes qu'il veut enlever dans le mode de jeu simple
-    :param name : nom du joueur
-    :param matches_remaining : nombre d'allumettes restantes 
-    :return: nombre d'allumettes que le joueur souhaite enlever
-"""
-def player_turn_simple(name, matches_remaining):
-    while True:
-        try:
-            number = int(input(f"{name}, combien d'allumettes voulez-vous prendre ? (1 à 4) : "))
-            if 1 <= number <= 4 and number <= matches_remaining:
+        value = input("Entrer le nombre de chevaux (entre 12 et 20) : ")
+        if value.isdigit():
+            number = int(value)
+            if 12 <= number <= 20:
                 return number
-        except ValueError:
-            pass
-        print("Entrée invalide. Essayez encore.")
+        print("Valeur non valide.")
 
-"""
-    Permet à l'ordinateur de choisir le nombre d'allumettes qu'il doit enlever dans le mode de jeu simple
-    :param last_choice_player : dernier nombre d'allumettes choisis par le joueur (Nullable)
-    :param matches_remaining : nombre d'allumettes restantes 
-    :return: liste de noms des joueurs
-"""
-def computer_turn_simple(last_choice_player, matches_remaining):
-    if last_choice_player:
-        number = 5 - last_choice_player
-    else:
-        number = random.randint(1, min(4, matches_remaining))
-
-    number = min(number, matches_remaining)
-    print(f"L'ordinateur prend {number} allumette(s).")
-    return number
-
-def display_piles(piles):
-    print("\nÉtat actuel des tas :")
-    for i, pile in enumerate(piles):
-        print(f"Tas {i + 1} : {'|' * pile} ({pile})")
-
-def is_game_over_marienbad(piles):
-    return all(pile == 0 for pile in piles)
-
-def player_turn_marienbad(player_name, piles):
+def get_race_type():
     while True:
-        try:
-            pile_index = int(input(f"{player_name}, choisissez un tas (1-4) : ")) - 1
-            if pile_index not in range(4):
-                print("Choisir un chiffre entre 1 et 4")
-            if piles[pile_index] == 0:
-                print("Ce tas est vide. Choisissez un autre.")
+        race = input("Entrer le type de course (tierce, quarte, quinte) : ").lower()
+        if race in {"tierce", "quarte", "quinte"}:
+            return {"tierce": 3, "quarte": 4, "quinte": 5}[race]
+        print("Type de course invalide.")
+
+def initialize_horses(nb_horses):
+    horses = {}
+    for numero in range(1, nb_horses + 1):
+        horses[numero] = {
+            "speed": 0,
+            "distance": 0,
+            "actif": True,
+            "lap_arrived": None
+        }
+    return horses
+
+def roll_dice():
+    return random.randint(1, 6)
+
+def update_horse(horse, roll, speed_mod_grid, dist_by_speed, lap, race_length):
+    if not horse["actif"] or horse["lap_arrived"] is not None:
+        return
+
+    speed = horse["speed"]
+    mod = speed_mod_grid[speed][roll]
+
+    if mod == 'DQ':
+        horse["actif"] = False
+        print(f"❌ Disqualifié (jet de {roll})")
+        return
+
+    new_speed = max(0, min(speed + mod, 6))
+    horse["speed"] = new_speed
+    horse["distance"] += dist_by_speed[new_speed]
+
+    if horse["distance"] >= race_length and horse["lap_arrived"] is None:
+        horse["lap_arrived"] = lap
+
+    print(f"Jet={roll}, mod={mod:+}, speed={new_speed}, distance={horse['distance']} m")
+
+def is_race_over(horses, race_length):
+    return all(
+        not h["actif"] or h["lap_arrived"] is not None
+        for h in horses.values()
+    )
+
+def get_final_ranking(horses):
+    return sorted(
+        horses.items(),
+        key=lambda x: (
+            x[1]["lap_arrived"] if x[1]["lap_arrived"] is not None else float('inf'),
+            -x[1]["distance"]
+        )
+    )
+
+def display_ranking(ranking, race_type, lap_time):
+    print("\nClassement final :\n")
+    for place, (num, ch) in enumerate(ranking, start=1):
+        if ch["lap_arrived"] is not None:
+            temps = ch["lap_arrived"] * lap_time
+            print(f"{place}. Cheval {num} est arrivé en {temps} s")
+        elif not ch["actif"]:
+            print(f"{place}. Cheval {num} est disqualifié")
+        else:
+            print(f"{place}. Cheval {num} - {ch['distance']} m (en course)")
+
+    print(f"\nTop {race_type} :")
+    for i, (num, ch) in enumerate(ranking[:race_type], start=1):
+        if ch["lap_arrived"] is not None:
+            temps = ch["lap_arrived"] * lap_time
+            print(f"{i}. Cheval {num}  en {temps} s")
+        elif not ch["actif"]:
+            print(f"{i}. Cheval {num} est disqualifié")
+        else:
+            print(f"{i}. Cheval {num} - {ch['distance']} m")
+
+def run_race(nb_horses, race_type, speed_mod_grid, dist_by_speed, race_length, lap_time):
+    horses = initialize_horses(nb_horses)
+    lap = 1
+
+    print(f"\nDébut de la course avec {nb_horses} chevaux\n")
+
+    while True:
+        input(f"\n--- Tour {lap} (t = {lap * lap_time} s) --- (Entrée pour continuer)")
+
+        for numero, horse in horses.items():
+            if not horse["actif"] or horse["lap_arrived"] is not None:
                 continue
 
-            max_take = piles[pile_index]
-            count = int(input(f"{player_name}, combien d'allumettes voulez-vous prendre dans le tas ?"))
-            if 1 <= count <= max_take:
-                return pile_index, count
-        except ValueError:
-            pass
-        print("Entrée invalide. Essayez encore.")
+            print(f"Cheval {numero}: ", end="")
+            roll = roll_dice()
+            update_horse(horse, roll, speed_mod_grid, dist_by_speed, lap, race_length)
 
-def computer_turn_marienbad(piles):
-    non_empty_indices = [i for i, pile in enumerate(piles) if pile > 0]
-    pile_index = random.choice(non_empty_indices)
-    count = random.randint(1, piles[pile_index])
-    print(f"L'ordinateur retire {count} allumette(s) du tas {pile_index + 1}.")
-    return pile_index, count
-
-
-def game_simple(players):
-    matches = 21
-    actual_player = random.randint(0, 1)
-    print(f"\n{players[actual_player]} commence la partie.\n")
-    last_choice = None
-
-    while matches > 0:
-        print(f"\nAllumettes restantes : {matches}")
-        player_name = players[actual_player]
-
-        if player_name == "Ordinateur":
-            choice = computer_turn_simple(last_choice, matches)
-        else:
-            choice = player_turn_simple(player_name, matches)
-            last_choice = choice
-
-        matches -= choice
-
-        if matches == 0:
-            print(f"\n{player_name} a pris la dernière allumette et perd la partie.")
-            print(f"{players[1 - actual_player]} gagne !\n")
+        if is_race_over(horses, race_length):
+            ranking = get_final_ranking(horses)
+            display_ranking(ranking, race_type, lap_time)
             break
 
-        actual_player = 1 - actual_player
+        lap += 1
 
-def game_marienbad(players):
-    piles = [1, 3, 5, 7]
-    actual_player = random.randint(0, 1)
-    print(f"\n{players[actual_player]} commence la partie.\n")
-
-    while not is_game_over_marienbad(piles):
-        display_piles(piles)
-        player_name = players[actual_player]
-
-        if player_name == "Ordinateur":
-            pile_index, count = computer_turn_marienbad(piles)
-        else:
-            pile_index, count = player_turn_marienbad(player_name, piles)
-
-        piles[pile_index] -= count
-        print(f"{player_name} retire {count} allumette(s) du tas {pile_index + 1}.")
-
-        if is_game_over_marienbad(piles):
-            print(f"\n{player_name} a pris la dernière allumette et perd la partie.")
-            print(f"{players[1 - actual_player]} gagne !\n")
-            break
-
-        actual_player = 1 - actual_player
+# --- Programme principal ---
 
 def main():
-    mode = ask_game_mode()
+    while True:
+        nb_horses = get_number_of_horses()
+        race_type = get_race_type()
 
-    if mode == "SIMPLE":
-        players = ask_type_of_game()
-        game_simple(players)
+        run_race(
+            nb_horses,
+            race_type,
+            SPEED_MODIFICATION_GRID,
+            DISTANCE_BY_SPEED,
+            RACE_LENGTH,
+            LAP_TIME
+        )
 
-    elif mode == "MARIENBAD":
-        players = ask_type_of_game()
-        game_marienbad(players)
+        fin = input("\nTapez FIN pour quitter ou Entrée pour une nouvelle course : ")
+        if fin.strip().upper() == "FIN":
+            break
 
 if __name__ == "__main__":
     main()
