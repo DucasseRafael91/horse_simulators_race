@@ -57,7 +57,14 @@ def initialize_horses(nb_horses):
     return horses
 
 def update_horse(horse, roll, lap):
-    if not horse["actif"] or horse["lap_arrived"]:
+    """
+     Permet de mettre à jour les informations de chaque cheval aprés chaque tour
+    :param horse: Cheval à mettre à jour
+    :param roll: chiffre aléatoire entre 1 et 6.
+    :param lap: Numéro du tour
+    :return: None
+    """
+    if horse["actif"] != True or horse["lap_arrived"]:
         return
 
     mod = SPEED_MODIFICATION_GRID[horse["speed"]][roll]
