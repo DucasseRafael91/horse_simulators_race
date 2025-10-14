@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 import random
 
+from colorama import init, Fore, Style
+
+# Initialise colorama (pour Windows notamment)
+init(autoreset=True)
+
 SPEED_MODIFICATION_GRID = {
     0: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
     1: {1: 0, 2: 0, 3: +1, 4: +1, 5: +1, 6: +2},
@@ -17,10 +22,6 @@ RACE_LENGTH = 2400
 LAP_TIME = 10
 
 def get_number_of_horses():
-    """
-       Permet de savoir combien de chevaux participeront à la course
-       :return: nombre de chevaux entre 12 et 20 qui participeront à la course
-    """
     while True:
         value = input("Entrer le nombre de chevaux (12-20) : ")
         if value.isdigit() and 12 <= int(value) <= 20:
@@ -28,10 +29,6 @@ def get_number_of_horses():
         print("Valeur non valide.")
 
 def get_race_type():
-    """
-       Permet de savoir quel type de course, cela sera (tierce, quarte ou quinte )
-       :return: 3,4,5 selon si cela est une tierce, un quarté ou un quinté
-    """
     types = {"tierce": 3, "quarte": 4, "quinte": 5}
     while True:
         race = input("Type de course (tierce, quarte, quinte) : ").lower()
@@ -39,13 +36,7 @@ def get_race_type():
             return types[race]
         print("Type invalide.")
 
-
 def initialize_horses(nb_horses):
-    """
-     Crée un dictionnaire représentant les chevaux d'une course.
-    :param nb_horses: Nombre de chevaux dans la course
-    :return: Dictionnaire des chevaux avec leurs attributs initialisés
-    """
     horses = {}
     for horse_number in range(1, nb_horses + 1):
         horses[horse_number] = {
@@ -57,14 +48,7 @@ def initialize_horses(nb_horses):
     return horses
 
 def update_horse(horse, roll, lap):
-    """
-     Permet de mettre à jour les informations de chaque cheval aprés chaque tour
-    :param horse: Cheval à mettre à jour
-    :param roll: chiffre aléatoire entre 1 et 6.
-    :param lap: Numéro du tour
-    :return: None
-    """
-    if horse["actif"] != True or horse["lap_arrived"]:
+    if not horse["actif"] or horse["lap_arrived"]:
         return
 
     mod = SPEED_MODIFICATION_GRID[horse["speed"]][roll]
@@ -72,7 +56,7 @@ def update_horse(horse, roll, lap):
         horse["actif"] = False
         return
 
-    horse["speed"] = max(0, min(horse["speed"] + mod, 6))
+    horse["speed"] += mod
     horse["distance"] += DISTANCE_BY_SPEED[horse["speed"]]
 
     if horse["distance"] >= RACE_LENGTH and not horse["lap_arrived"]:
@@ -111,6 +95,28 @@ def display_ranking(ranking, race_type):
         else:
             print(f"{i}. Cheval {num} - {ch['distance']} m")
 
+def print_progress_bar(horses):
+    max_bar_length = 40  # Largeur de la barre en caractères
+
+    for num, horse in horses.items():
+        progress_ratio = horse["distance"] / RACE_LENGTH
+        progress_ratio = min(progress_ratio, 1.0)  # clamp max à 1
+
+        filled_length = int(progress_ratio * max_bar_length)
+        bar = '█' * filled_length + '-' * (max_bar_length - filled_length)
+
+        if horse["lap_arrived"]:
+            status = f"arrivé (tour {horse['lap_arrived']})"
+            color = Fore.GREEN
+        elif not horse["actif"]:
+            status = "disqualifié"
+            color = Fore.RED
+        else:
+            status = "en course"
+            color = Fore.YELLOW
+
+        print(f"Cheval {num:2d} |{color}{bar}{Style.RESET_ALL}| {horse['distance']:4d} m - {status}")
+
 def run_race(nb_horses, race_type):
     horses = initialize_horses(nb_horses)
     lap = 1
@@ -118,9 +124,11 @@ def run_race(nb_horses, race_type):
     print(f"\nDébut de la course\n")
 
     while True:
-        input(f"\nTour {lap} Appuyez sur Entrée")
+        input(f"\nTour {lap} - Appuyez sur Entrée pour continuer...")
         for num, horse in horses.items():
             update_horse(horse, random.randint(1, 6), lap)
+
+        print_progress_bar(horses)
 
         if is_race_over(horses):
             ranking = get_final_ranking(horses)
