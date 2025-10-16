@@ -1,2 +1,125 @@
-Une course de trot attelé2 rassemble 12 à 20 chevaux, chacun tractant un sulky, et étant mené par un driver. Elle peut faire l’objet d’un tiercé, d’un quarté, ou d’un quinté. La course est supposée se dérouler sur un hippodrome rectiligne (chaque cheval disposant de son propre couloir), d’une longueur de 2 400 m. Il est à noter que chaque cheval doit respecter l’allure du trot de bout en bout, le passage au galop entrainant sa disqualification. L’utilisateur saisit au démarrage le nombre de chevaux et le type de la course.
-La course se déroule à la manière d’un « jeu de plateau » : à chaque tour de jeu, chaque cheval fait l’objet d’un jet de dé (à SIX faces), qui décide d’une altération possible de sa vitesse (augmentation, stabilisation, diminution). La nouvelle vitesse détermine alors la distance dont il avance. Chaque tour de jeu représente 10 secondes du déroulement de la course, mais le temps ne sera pas rendu dans le programme. C’est l’utilisateur qui fera avancer la course de tour en tour, à la suite d’un message du programme l’y invitant.
+🐴 Simulation de Course de Trot Attelé
+
+Ce projet est un simulateur de course de trot attelé, inspiré des courses hippiques réelles. Il s'agit d'un jeu au tour par tour, dans lequel chaque cheval progresse en fonction d’un jet de dé, simulant les variations de vitesse tout au long d’une course de 2 400 mètres.
+
+📜 Règles de la course
+
+La course se déroule sur un hippodrome rectiligne de 2400 m.
+
+Chaque cheval est mené par un driver dans un sulky, dans un couloir séparé.
+
+Chaque cheval commence à l’arrêt (vitesse = 0).
+
+À chaque tour de jeu (équivalent à 10 secondes dans la course), un dé à 6 faces est lancé pour chaque cheval.
+
+Le jet de dé modifie la vitesse du cheval, selon un tableau prédéfini.
+
+La vitesse détermine la distance parcourue par le cheval à ce tour.
+
+Si un cheval atteint une vitesse de 6 et obtient un 6 au dé, il est disqualifié pour passage au galop.
+
+🎲 Évolution de la vitesse
+
+La vitesse de chaque cheval est mise à jour à chaque tour selon le tableau d’évolution suivant :
+
+Vitesse actuelle	Dé = 1	Dé = 2	Dé = 3	Dé = 4	Dé = 5	Dé = 6
+0	0	+1	+1	+1	+2	+2
+1	0	0	+1	+1	+1	+2
+2	0	0	+1	+1	+1	+2
+3	-1	0	0	+1	+1	+1
+4	-1	0	0	0	+1	+1
+5	-2	-1	0	0	0	+1
+6	-2	-1	0	0	0	DQ
+
+DQ = Disqualification (passage au galop interdit)
+
+🏁 Distance parcourue selon la vitesse
+Vitesse	Distance (m) / tour (10s)
+0	0
+1	23
+2	46
+3	69
+4	92
+5	115
+6	138
+⚙️ Fonctionnement du programme
+
+Au démarrage, l’utilisateur saisit :
+
+Le nombre de chevaux (entre 12 et 20),
+
+Le type de course : tiercé (3 premiers), quarté (4 premiers), quinté (5 premiers).
+
+La course se joue en tours successifs :
+
+À chaque tour, le programme affiche :
+
+Le numéro du tour,
+
+La vitesse actuelle de chaque cheval,
+
+La distance totale parcourue,
+
+Une éventuelle disqualification.
+
+L’utilisateur appuie sur une touche pour passer au tour suivant.
+
+La course se termine lorsque tous les chevaux non disqualifiés ont franchi la ligne d’arrivée (2400 m).
+
+Le programme affiche alors :
+
+Les 3, 4 ou 5 premiers chevaux arrivés, selon le type de course choisi.
+
+Le classement final.
+
+🖥️ (Optionnel) Affichage visuel
+
+Il est possible d’ajouter un affichage graphique simplifié de la course, où chaque cheval est représenté par une ligne contenant des . ou -, avec un caractère représentant le cheval (C1, C2, etc.), pour voir visuellement leur progression vers l'arrivée.
+
+✅ Exemple d’exécution
+Bienvenue dans la simulation de course de trot attelé !
+
+Nombre de chevaux (12 à 20) : 15
+Type de course (tierce, quarte, quinte) : quinte
+
+--- Début de la course ---
+
+Tour 1 :
+Cheval 1 : vitesse = 1, distance = 23 m
+Cheval 2 : vitesse = 0, distance = 0 m
+...
+Appuyez sur Entrée pour continuer...
+
+...
+Course terminée !
+🏆 Résultat (Quinté) :
+1. Cheval 8
+2. Cheval 4
+3. Cheval 11
+4. Cheval 1
+5. Cheval 7
+
+🛠️ Technologies utilisées
+
+Langage : Python (ou autre, selon votre implémentation)
+
+Aucune bibliothèque externe requise
+
+📂 Structure du projet
+trot-course/
+│
+├── main.py         # Code principal de la simulation
+├── README.md       # Ce fichier
+└── utils.py        # (Optionnel) Fonctions utilitaires
+
+📌 Remarques
+
+Le programme est basé sur une logique de jeu de plateau.
+
+La progression dépend uniquement du hasard (jets de dé).
+
+Le passage au galop est interdit → attention aux disqualifications !
+
+✍️ Auteur
+
+Projet pédagogique / scolaire - Simulation simplifiée de course hippique.
