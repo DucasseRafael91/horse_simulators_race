@@ -22,6 +22,10 @@ race_length = 2400
 lap_time = 10
 
 def get_number_of_horses():
+    """
+    Retourne le nombre de chevaux participant à la course
+    :return: valeur represent le nombre de chevaux participant
+    """
     while True:
         value = input("Entrer le nombre de chevaux (12-20) : ")
         if value.isdigit() and 12 <= int(value) <= 20:
@@ -29,6 +33,10 @@ def get_number_of_horses():
         print("Valeur non valide.")
 
 def get_race_type():
+    """
+    Permet de savoir le type de la course
+    :return: numero du type de la course (3, 4 ou 5)
+    """
     types = {"tierce": 3, "quarte": 4, "quinte": 5}
     while True:
         race = input("Type de course (tierce, quarte, quinte) : ").lower()
@@ -37,6 +45,11 @@ def get_race_type():
         print("Type invalide.")
 
 def initialize_horses(nb_horses):
+    """
+    Permet d'initialiser les chevaux pour la course
+    :param nb_horses: nombre de chevaux participant à la course
+    :return: liste des chevaux pour la course
+    """
     horses = {}
     for horse_number in range(1, nb_horses + 1):
         horses[horse_number] = {
@@ -48,6 +61,13 @@ def initialize_horses(nb_horses):
     return horses
 
 def update_horse(horse, roll, lap):
+    """
+    Permet de mettre à jour les informations sur le cheval
+    :param horse: informations sur le cheval
+    :param roll: jet de dés pour déterminer sa nouvelle vitesse
+    :param lap: numéro du tour
+    :return: None
+    """
     if not horse["actif"] or horse["lap_arrived"]:
         return
 
@@ -63,9 +83,19 @@ def update_horse(horse, roll, lap):
         horse["lap_arrived"] = lap
 
 def is_race_over(horses):
+    """
+    Permet de savoir si la course est terminée
+    :param horses: liste de chevaux pour la course
+    :return: True si la course est terminée
+    """
     return all(not h["actif"] or h["lap_arrived"] for h in horses.values())
 
 def get_final_ranking(horses):
+    """
+    Permet d'obtenir le classement final de la course
+    :param horses: liste de chevaux pour la course
+    :return: liste de chevaux pour la course triés selon leur temps d'arrivée et leur distance
+    """
     return sorted(
         horses.items(),
         key=lambda x: (
@@ -75,6 +105,12 @@ def get_final_ranking(horses):
     )
 
 def display_ranking(ranking, race_type):
+    """
+    Permet d'afficher le classement final de la course
+    :param ranking: liste de chevaux pour la course triés selon leur temps
+    :param race_type: numéro correspondant au type de course (3, 4 ou 5)
+    :return: None
+    """
     print(f"\nTop {race_type} :")
     for i, (num, ch) in enumerate(ranking[:race_type], 1):
         if ch["lap_arrived"]:
@@ -86,6 +122,11 @@ def display_ranking(ranking, race_type):
             print(f"{i}. Cheval {num} - {ch['distance']} m")
 
 def print_progress_bar(horses):
+    """
+    Permet d'afficher la progression de chaque cheval apres chaque tour
+    :param horses: liste de chevaux pour la course
+    :return: None
+    """
     max_bar_length = 40  # Largeur de la barre en caractères
 
     for num, horse in horses.items():
@@ -108,6 +149,12 @@ def print_progress_bar(horses):
         print(f"Cheval {num:2d} |{color}{bar}{Style.RESET_ALL}| {horse['distance']:4d} m - {status}")
 
 def run_race(nb_horses, race_type):
+    """
+    Permet de lancer la course
+    :param nb_horses: liste de chevaux pour la course
+    :param race_type: valeur correspondant au type de course (3, 4 ou 5)
+    :return: None
+    """
     horses = initialize_horses(nb_horses)
     lap = 1
 
@@ -128,6 +175,10 @@ def run_race(nb_horses, race_type):
         lap += 1
 
 def main():
+    """
+    Fonction principal
+    :return: None
+    """
     while True:
         nb_horses = get_number_of_horses()
         race_type = get_race_type()
