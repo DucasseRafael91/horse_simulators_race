@@ -87,13 +87,6 @@ Langage : Python 3.13
 Bibliothéque Random
 Bibliothéque Colorama
 
-📂 Structure du projet
-trot-course/
-│
-├── horse_simulators_race.py         # Code principal de la simulation
-├── README.md                        # Ce fichier
-└── .gitignore                       # Gitignore
-
 📌 Remarques
 
 Le programme est basé sur une logique de jeu de plateau.
