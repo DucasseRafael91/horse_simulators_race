@@ -78,43 +78,23 @@ Le classement final.
 
 🖥️ (Optionnel) Affichage visuel
 
-Il est possible d’ajouter un affichage graphique simplifié de la course, où chaque cheval est représenté par une ligne contenant des . ou -, avec un caractère représentant le cheval (C1, C2, etc.), pour voir visuellement leur progression vers l'arrivée.
+Il existe un affiche visuel permettant de savoir ou est chaque cheval à chaque tour
 
-✅ Exemple d’exécution
-Bienvenue dans la simulation de course de trot attelé !
-
-Nombre de chevaux (12 à 20) : 15
-Type de course (tierce, quarte, quinte) : quinte
-
---- Début de la course ---
-
-Tour 1 :
-Cheval 1 : vitesse = 1, distance = 23 m
-Cheval 2 : vitesse = 0, distance = 0 m
-...
-Appuyez sur Entrée pour continuer...
-
-...
-Course terminée !
-🏆 Résultat (Quinté) :
-1. Cheval 8
-2. Cheval 4
-3. Cheval 11
-4. Cheval 1
-5. Cheval 7
+=
 
 🛠️ Technologies utilisées
 
-Langage : Python (ou autre, selon votre implémentation)
+Langage : Python 3.13
 
-Aucune bibliothèque externe requise
+Bibliothéque Random
+Bibliothéque Colorama
 
 📂 Structure du projet
 trot-course/
 │
-├── main.py         # Code principal de la simulation
-├── README.md       # Ce fichier
-└── utils.py        # (Optionnel) Fonctions utilitaires
+├── horse_simulators_race.py         # Code principal de la simulation
+├── README.md                        # Ce fichier
+└── .gitignore                       # Gitignore
 
 📌 Remarques
 
@@ -124,6 +104,3 @@ La progression dépend uniquement du hasard (jets de dé).
 
 Le passage au galop est interdit → attention aux disqualifications !
 
-✍️ Auteur
-
-Projet pédagogique / scolaire - Simulation simplifiée de course hippique.
