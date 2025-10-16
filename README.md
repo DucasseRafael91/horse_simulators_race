@@ -22,26 +22,30 @@ Si un cheval atteint une vitesse de 6 et obtient un 6 au dé, il est disqualifi�
 
 La vitesse de chaque cheval est mise à jour à chaque tour selon le tableau d’évolution suivant :
 
-Vitesse actuelle	Dé = 1	Dé = 2	Dé = 3	Dé = 4	Dé = 5	Dé = 6
-0	0	+1	+1	+1	+2	+2
-1	0	0	+1	+1	+1	+2
-2	0	0	+1	+1	+1	+2
-3	-1	0	0	+1	+1	+1
-4	-1	0	0	0	+1	+1
-5	-2	-1	0	0	0	+1
-6	-2	-1	0	0	0	DQ
+| Vitesse actuelle | Dé = 1 | Dé = 2 | Dé = 3 | Dé = 4 | Dé = 5 | Dé = 6 |
+| ---------------- | ------ | ------ | ------ | ------ | ------ | ------ |
+| 0                | 0      | +1     | +1     | +1     | +2     | +2     |
+| 1                | 0      | 0      | +1     | +1     | +1     | +2     |
+| 2                | 0      | 0      | +1     | +1     | +1     | +2     |
+| 3                | -1     | 0      | 0      | +1     | +1     | +1     |
+| 4                | -1     | 0      | 0      | 0      | +1     | +1     |
+| 5                | -2     | -1     | 0      | 0      | 0      | +1     |
+| 6                | -2     | -1     | 0      | 0      | 0      | DQ     |
+
 
 DQ = Disqualification (passage au galop interdit)
 
 🏁 Distance parcourue selon la vitesse
-Vitesse	Distance (m) / tour (10s)
-0	0
-1	23
-2	46
-3	69
-4	92
-5	115
-6	138
+| Vitesse | Distance (m) / tour (10s) |
+| ------- | ------------------------- |
+| 0       | 0                         |
+| 1       | 23                        |
+| 2       | 46                        |
+| 3       | 69                        |
+| 4       | 92                        |
+| 5       | 115                       |
+| 6       | 138                       |
+
 ⚙️ Fonctionnement du programme
 
 Au démarrage, l’utilisateur saisit :
