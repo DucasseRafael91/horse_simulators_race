@@ -74,8 +74,6 @@ Le programme affiche alors :
 
 Les 3, 4 ou 5 premiers chevaux arrivés, selon le type de course choisi.
 
-Le classement final.
-
 🖥️ (Optionnel) Affichage visuel
 
 Il existe un affiche visuel permettant de savoir ou est chaque cheval à chaque tour
